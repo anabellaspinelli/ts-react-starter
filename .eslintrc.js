@@ -29,5 +29,6 @@ module.exports = {
     'react/prop-types': 'off',
     'react-hooks/exhaustive-deps': 'error',
     'react/self-closing-comp': 'warn',
+    'react/jsx-sort-props': true,
   },
 };
