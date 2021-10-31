@@ -1,16 +1,24 @@
 import './App.css';
+import { Background } from './Background';
+import { ThemeProvider } from './contexts/theme-context';
+import { Toggle } from './Toggle';
 
 function App(): JSX.Element | null {
   return (
-    <div className="h-screen w-full flex flex-col items-center pt-32 px-2 bg-blue-50">
-      <div className="p-4 rounded-2xl text-center bg-blue-400 hover:bg-blue-500 hover:shadow-lg transition-all">
-        <header>
-          <h1 className="text-6xl text-white font-bold cursor-default">
-            TS React Starter
-          </h1>
-        </header>
-      </div>
-    </div>
+    <ThemeProvider>
+      <Background>
+        <div className="px-4 mx-auto max-w-screen-sm md:max-w-screen-md md:p-0 lg:max-w-screen-lg xl:max-w-screen-xl">
+          <div className="absolute right-0 top-0 mr-4 mt-4 md:mr-6 md:mt-6">
+            <Toggle />
+          </div>
+          <div className="min-h-screen flex justify-center items-center">
+            <h1 className="text-gray-900 dark:text-white text-3xl sm:text-5xl lg:text-6xl leading-none font-extrabold tracking-tight mb-8">
+              Dark Mode Template
+            </h1>
+          </div>
+        </div>
+      </Background>
+    </ThemeProvider>
   );
 }
 

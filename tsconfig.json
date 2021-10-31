@@ -1,13 +1,16 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "alwaysStrict": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "noImplicitAny": true,
     "jsx": "react-jsx",
-    "lib": ["dom", "es2017", "webworker"],
+    "lib": [
+      "dom",
+      "es2017",
+      "webworker"
+    ],
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
@@ -16,15 +19,22 @@
     "noUnusedParameters": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "strict": true,
     "target": "es5",
-    "typeRoots": ["./node_modules/@types", "./types"],
-    "types": ["jest"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./types"
+    ],
+    "types": [
+      "jest"
+    ],
     "sourceRoot": "/",
     "sourceMap": true,
     "inlineSources": true,
     "baseUrl": ".",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "strict": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }
