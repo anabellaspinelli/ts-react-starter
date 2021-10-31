@@ -30,5 +30,6 @@ module.exports = {
     'react-hooks/exhaustive-deps': 'error',
     'react/self-closing-comp': 'warn',
     'react/jsx-sort-props': true,
+    'react/react-in-jsx-scope': 'off',
   },
 };
