@@ -31,5 +31,6 @@ module.exports = {
     'react/self-closing-comp': 'warn',
     'react/jsx-sort-props': 2,
     'react/react-in-jsx-scope': 'off',
+    'jsx-a11y/no-onchange': 0,
   },
 };
