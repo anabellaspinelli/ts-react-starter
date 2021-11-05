@@ -1,4 +1,4 @@
-import './App.css';
+import { SignUpForm } from './sign-up-form';
 
 function App(): JSX.Element | null {
   return (
@@ -10,6 +10,8 @@ function App(): JSX.Element | null {
           </h1>
         </header>
       </div>
+      <div className="mt-32" />
+      <SignUpForm />
     </div>
   );
 }
