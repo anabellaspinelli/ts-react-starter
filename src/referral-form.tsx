@@ -1,6 +1,6 @@
-import { ErrorMessage, Field, Form, Formik } from 'formik';
-import React from 'react';
+import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
 import * as Yup from 'yup';
+import cn from 'classnames';
 
 interface Employer {
   name: string;
@@ -68,7 +68,7 @@ export function ReferralForm() {
       onSubmit={(values) => console.log(values)}
       validationSchema={referralFormValidationSchema}
     >
-      {
+      {(formik) => (
         <div className="mt-12">
           <Form>
             {/* Personal */}
@@ -147,74 +147,110 @@ export function ReferralForm() {
                 Employer
               </legend>
 
-              <div className="mb-2 flex flex-col">
-                <label
-                  className="text-xs font-medium"
-                  htmlFor="employer[0].name"
-                >
-                  Employer name
-                </label>
-                <Field
-                  className="text-sm py-1 px-2 rounded"
-                  name="employer[0].name"
-                  type="text"
-                />
-                <ErrorMessage name="employer[0].name">
-                  {(msg) => (
-                    <div className="text-red-500 text-xs font-semibold mt-2">
-                      {msg}
-                    </div>
-                  )}
-                </ErrorMessage>
-              </div>
+              <FieldArray
+                name="employer"
+                render={(arrayHelpers) => (
+                  <div>
+                    {formik.values.employer.map((_employer, index) => (
+                      <fieldset
+                        className={cn('border border-blue-400 p-3 rounded-md', {
+                          'mt-2': index > 0,
+                        })}
+                        key={index}
+                      >
+                        <div className="mb-2 flex flex-col">
+                          <label
+                            className="text-xs font-medium"
+                            htmlFor={`employer[${index}].name`}
+                          >
+                            Employer name
+                          </label>
+                          <Field
+                            className="text-sm py-1 px-2 rounded"
+                            name={`employer[${index}].name`}
+                            type="text"
+                          />
+                          <ErrorMessage name={`employer[${index}].name`}>
+                            {(msg) => (
+                              <div className="text-red-500 text-xs font-semibold mt-2">
+                                {msg}
+                              </div>
+                            )}
+                          </ErrorMessage>
+                        </div>
 
-              <div className="flex">
-                <div className="mb-2 flex flex-col">
-                  <label
-                    className="text-xs font-medium"
-                    htmlFor="employer[0].start_date"
-                  >
-                    Employment start date
-                  </label>
-                  <Field
-                    className="text-sm py-1 px-2 rounded"
-                    name="employer[0].start_date"
-                    type="date"
-                  />
-                  <ErrorMessage name="employer[0].start_date">
-                    {(msg) => (
-                      <div className="text-red-500 text-xs font-semibold mt-2">
-                        {msg}
-                      </div>
-                    )}
-                  </ErrorMessage>
-                </div>
+                        <div className="flex">
+                          <div className="mb-2 flex flex-col">
+                            <label
+                              className="text-xs font-medium"
+                              htmlFor="employer[0].start_date"
+                            >
+                              Employment start date
+                            </label>
+                            <Field
+                              className="text-sm py-1 px-2 rounded"
+                              name="employer[0].start_date"
+                              type="date"
+                            />
+                            <ErrorMessage name="employer[0].start_date">
+                              {(msg) => (
+                                <div className="text-red-500 text-xs font-semibold mt-2">
+                                  {msg}
+                                </div>
+                              )}
+                            </ErrorMessage>
+                          </div>
 
-                <div className="mb-2 flex flex-col ml-4">
-                  <label
-                    className="text-xs font-medium"
-                    htmlFor="employer[0].end_date"
-                  >
-                    Employment end date
-                  </label>
-                  <Field
-                    className="text-sm py-1 px-2 rounded"
-                    name="employer[0].end_date"
-                    type="date"
-                  />
-                  <ErrorMessage name="employer[0].end_date">
-                    {(msg) => (
-                      <div className="text-red-500 text-xs font-semibold mt-2">
-                        {msg}
-                      </div>
-                    )}
-                  </ErrorMessage>
-                </div>
-              </div>
-
-              <button className="bg-blue-400 p-1 rounded-md text-white text-xs font-medium mt-2 hover:bg-blue-500 hover:shadow-md transition-all duration-150">
-                Add another
-              </button>
+                          <div className="mb-2 flex flex-col ml-4">
+                            <label
+                              className="text-xs font-medium"
+                              htmlFor="employer[0].end_date"
+                            >
+                              Employment end date
+                            </label>
+                            <Field
+                              className="text-sm py-1 px-2 rounded"
+                              name="employer[0].end_date"
+                              type="date"
+                            />
+                            <ErrorMessage name="employer[0].end_date">
+                              {(msg) => (
+                                <div className="text-red-500 text-xs font-semibold mt-2">
+                                  {msg}
+                                </div>
+                              )}
+                            </ErrorMessage>
+                          </div>
+                        </div>
+                        {index > 0 ? (
+                          <div className="flex w-full justify-end">
+                            <button
+                              className="text-xs flex items-center hover:underline text-red-500"
+                              onClick={() => arrayHelpers.remove(index)}
+                              type="button"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        ) : null}
+                      </fieldset>
+                    ))}
+                    <button
+                      className="bg-blue-400 w-full p-1 rounded-md text-white text-xs font-medium mt-2 hover:bg-blue-500 hover:shadow-md transition-all duration-150"
+                      onClick={() =>
+                        arrayHelpers.push({
+                          name: '',
+                          start_date: '',
+                          endDate: '',
+                        })
+                      }
+                      type="button"
+                    >
+                      Add another
+                    </button>
+                  </div>
+                )}
+              />
             </fieldset>
 
             {/* Guarantor */}
@@ -298,7 +334,7 @@ export function ReferralForm() {
             </button>
           </Form>
         </div>
-      }
+      )}
     </Formik>
   );
 }
