@@ -1,6 +1,7 @@
 import { ErrorMessage, Field, FieldArray, Form, Formik } from 'formik';
 import * as Yup from 'yup';
 import cn from 'classnames';
+import { differenceInYears } from 'date-fns';
 
 interface Employer {
   name: string;
@@ -20,7 +21,7 @@ interface ReferralFormValues {
   guarantor: Guarantor;
 }
 
-const FORM_INITIAL_VALUES: ReferralFormValues = {
+const INITIAL_FORM_VALUES: ReferralFormValues = {
   personal: { first_name: '', last_name: '', current_address: '' },
   employer: [{ name: '', start_date: '', end_date: '' }],
   guarantor: {
@@ -29,6 +30,11 @@ const FORM_INITIAL_VALUES: ReferralFormValues = {
     relation: '',
   },
 };
+
+function isShortTermEmployee(startDate: string, endDate: string) {
+  console.log(differenceInYears(new Date(endDate), new Date(startDate)) < 3);
+  return differenceInYears(new Date(endDate), new Date(startDate)) < 3;
+}
 
 const stringValueSchema = Yup.string()
   .max(120, 'Must be 120 characters or less')
@@ -64,11 +70,11 @@ const referralFormValidationSchema = Yup.object({
 export function ReferralForm() {
   return (
     <Formik
-      initialValues={FORM_INITIAL_VALUES}
+      initialValues={INITIAL_FORM_VALUES}
       onSubmit={(values) => console.log(values)}
       validationSchema={referralFormValidationSchema}
     >
-      {(formik) => (
+      {({ values, resetForm }) => (
         <div className="mt-12">
           <Form>
             {/* Personal */}
@@ -140,7 +146,6 @@ export function ReferralForm() {
                 </ErrorMessage>
               </div>
             </fieldset>
-
             {/* Employer */}
             <fieldset className="border border-blue-400 rounded-md p-4 flex flex-col mb-4">
               <legend className="text-xs font-medium px-2 py-px rounded bg-blue-400 text-white">
@@ -151,7 +156,7 @@ export function ReferralForm() {
                 name="employer"
                 render={(arrayHelpers) => (
                   <div>
-                    {formik.values.employer.map((_employer, index) => (
+                    {values.employer.map((_employer, index) => (
                       <fieldset
                         className={cn('border border-blue-400 p-3 rounded-md', {
                           'mt-2': index > 0,
@@ -235,24 +240,28 @@ export function ReferralForm() {
                         ) : null}
                       </fieldset>
                     ))}
-                    <button
-                      className="bg-blue-400 w-full p-1 rounded-md text-white text-xs font-medium mt-2 hover:bg-blue-500 hover:shadow-md transition-all duration-150"
-                      onClick={() =>
-                        arrayHelpers.push({
-                          name: '',
-                          start_date: '',
-                          endDate: '',
-                        })
-                      }
-                      type="button"
-                    >
-                      Add another
-                    </button>
+                    {isShortTermEmployee(
+                      values.employer[values.employer.length - 1].start_date,
+                      values.employer[values.employer.length - 1].end_date
+                    ) ? (
+                      <button
+                        className="bg-blue-400 w-full p-1 rounded-md text-white text-xs font-medium mt-2 hover:bg-blue-500 hover:shadow-md transition-all duration-150"
+                        onClick={() =>
+                          arrayHelpers.push({
+                            name: '',
+                            start_date: '',
+                            endDate: '',
+                          })
+                        }
+                        type="button"
+                      >
+                        Add another
+                      </button>
+                    ) : null}
                   </div>
                 )}
               />
             </fieldset>
-
             {/* Guarantor */}
             <fieldset className="border border-blue-400 rounded-md p-4 flex flex-col mb-4">
               <legend className="text-xs font-medium px-2 py-px rounded bg-blue-400 text-white">
@@ -261,7 +270,7 @@ export function ReferralForm() {
 
               <div className="mb-2 flex flex-col">
                 <label className="text-xs font-medium" htmlFor="guarantor.name">
-                  Guarantor name
+                  Name
                 </label>
                 <Field
                   className="text-sm py-1 px-2 rounded"
@@ -282,7 +291,7 @@ export function ReferralForm() {
                   className="text-xs font-medium"
                   htmlFor="guarantor.address"
                 >
-                  Guarantor address
+                  Address
                 </label>
                 <Field
                   className="text-sm py-1 px-2 rounded"
@@ -303,7 +312,7 @@ export function ReferralForm() {
                   className="text-xs font-medium"
                   htmlFor="guarantor.relation"
                 >
-                  Guarantor relation
+                  Relation
                 </label>
                 <Field
                   as="select"
@@ -325,13 +334,28 @@ export function ReferralForm() {
                 </ErrorMessage>
               </div>
             </fieldset>
-
-            <button
-              className="bg-green-400 p-2 w-full rounded-md text-white font-extrabold mt-2 hover:bg-green-500 hover:shadow-md transition-all duration-150"
-              type="submit"
-            >
-              Submit
-            </button>
+            <div className="flex justify-end">
+              <button
+                className="border-red-400 border-2 p-2 text-sm rounded-md text-red-400 hover:text-red-500 font-bold mt-2 hover:border-red-500 transition-all duration-150"
+                onClick={() => resetForm()}
+                type="button"
+              >
+                Cancel
+              </button>
+              <button
+                className="bg-green-400 p-2 rounded-md text-sm text-white font-bold mt-2 ml-2 hover:bg-green-500 hover:shadow-md transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed disabled:bg-green-400 disabled:shadow-none"
+                disabled={
+                  values.employer.length === 1 &&
+                  isShortTermEmployee(
+                    values.employer[values.employer.length - 1].start_date,
+                    values.employer[values.employer.length - 1].end_date
+                  )
+                }
+                type="submit"
+              >
+                Submit
+              </button>
+            </div>
           </Form>
         </div>
       )}
