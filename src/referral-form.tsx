@@ -36,7 +36,7 @@ const stringValueSchema = Yup.string()
   .required('Please fill in this field');
 
 const dateValueSchema = Yup.string()
-  .length(8, 'Please select a valid date')
+  .length(10, 'Please select a valid date')
   .required('Please fill in this field');
 
 const referralFormValidationSchema = Yup.object({
